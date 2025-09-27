@@ -1,135 +1,211 @@
-# Turborepo starter
+# Classmos - Educational Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern educational platform built with turborepo, featuring real-time communication and AI-powered features.
 
-## Using this example
+## 🏗️ Architecture
 
-Run the following command:
+This monorepo contains:
 
-```sh
-npx create-turbo@latest
+- **`apps/web`** - Next.js frontend application
+- **`apps/api`** - Express.js REST API server  
+- **`apps/socket`** - Socket.io WebSocket server for real-time features
+- **`packages/types`** - Shared TypeScript types and interfaces
+- **`packages/ui`** - Shared React components
+- **`packages/eslint-config`** - Shared ESLint configuration
+- **`packages/typescript-config`** - Shared TypeScript configuration
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js >= 18
+- pnpm >= 9.0.0
+
+### Installation
+
+1. **Clone and install dependencies:**
+   ```bash
+   git clone <repository-url>
+   cd classmos
+   pnpm install
+   ```
+
+2. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual API keys and database URLs
+   ```
+
+3. **Start development servers:**
+   ```bash
+   # Start all services in development mode
+   pnpm dev
+   
+   # Or start individual services:
+   pnpm --filter web dev       # Frontend (port 3000)
+   pnpm --filter api dev       # API server (port 4000)  
+   pnpm --filter socket dev    # Socket server (port 4001)
+   ```
+
+## 📦 Package Scripts
+
+### Root Commands
+- `pnpm dev` - Start all apps in development mode
+- `pnpm build` - Build all apps for production
+- `pnpm lint` - Lint all packages
+- `pnpm format` - Format code with Prettier
+- `pnpm check-types` - Type check all packages
+- `pnpm clean` - Clean all build artifacts
+
+### Individual Apps
+- `pnpm --filter web <script>` - Run script in web app
+- `pnpm --filter api <script>` - Run script in API app
+- `pnpm --filter socket <script>` - Run script in socket app
+
+## 🔧 Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```env
+# Clerk Authentication
+CLERK_API_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+
+# AI Integration (Google Gemini)
+GEMINI_API_KEY=your_gemini_api_key
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/classmos
+
+# Server Configuration
+PORT=4000                    # API server port
+SOCKET_PORT=4001            # Socket server port
+FRONTEND_URL=http://localhost:3000
+
+# Development
+NODE_ENV=development
 ```
 
-## What's inside?
+## 🏢 Application Details
 
-This Turborepo includes the following packages/apps:
+### Frontend (`apps/web`)
+- **Framework:** Next.js 15 with App Router
+- **Authentication:** Clerk
+- **Real-time:** Socket.io client
+- **Styling:** CSS Modules + Global CSS
+- **Port:** 3000
 
-### Apps and Packages
+### API Server (`apps/api`)
+- **Framework:** Express.js
+- **Database:** MongoDB with Mongoose
+- **Authentication:** Clerk Express middleware
+- **Port:** 4000
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+**Key endpoints:**
+- `GET /health` - Health check
+- `GET /api/users` - User management
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Socket Server (`apps/socket`)
+- **Framework:** Socket.io
+- **Authentication:** Clerk integration
+- **Port:** 4001
 
-### Utilities
+**Supported events:**
+- `user:join/leave` - User presence
+- `room:join/leave` - Room management  
+- `chat:message` - Real-time messaging
+- `chat:typing` - Typing indicators
 
-This Turborepo has some additional tools already setup for you:
+## 📚 Shared Packages
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### `@repo/types`
+Shared TypeScript interfaces and types used across all applications:
+- User and authentication types
+- API response structures
+- Chat and messaging types
+- Class and education types
 
-### Build
+### `@repo/ui`
+Shared React components and UI elements.
 
-To build all apps and packages, run the following command:
+### `@repo/eslint-config`
+Shared ESLint configurations for consistent code style.
 
-```
-cd my-turborepo
+### `@repo/typescript-config`
+Shared TypeScript configurations with sensible defaults.
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+## 🛠️ Development Workflow
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+### Adding Dependencies
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+```bash
+# Add to specific app
+pnpm --filter web add <package>
+pnpm --filter api add <package>
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+# Add to workspace root
+pnpm add -w <package>
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Add to shared package
+pnpm --filter @repo/types add <package>
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Creating New Packages
+
+1. Create directory in `packages/` or `apps/`
+2. Add `package.json` with appropriate workspace dependencies
+3. Update `pnpm-workspace.yaml` if needed (usually automatic)
+
+### Database Setup
+
+1. **Install MongoDB locally or use MongoDB Atlas**
+2. **Update MONGODB_URI in .env**
+3. **Start the API server** - it will auto-connect to MongoDB
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Port conflicts:** Check if ports 3000, 4000, 4001 are available
+2. **MongoDB connection:** Ensure MongoDB is running and URI is correct
+3. **Dependencies:** Run `pnpm install` at root to sync all packages
+
+### Logs
+
+- **Frontend:** Check browser console and terminal
+- **API:** Check terminal for Express server logs
+- **Socket:** Check terminal for Socket.io connection logs
+
+## 📁 Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+classmos/
+├── apps/
+│   ├── web/              # Next.js frontend
+│   ├── api/              # Express.js API
+│   └── socket/           # Socket.io server
+├── packages/
+│   ├── types/            # Shared TypeScript types
+│   ├── ui/               # Shared React components
+│   ├── eslint-config/    # ESLint configurations
+│   └── typescript-config/ # TypeScript configurations
+├── .env.example          # Environment variables template
+├── turbo.json           # Turborepo configuration
+├── pnpm-workspace.yaml  # pnpm workspace configuration
+└── package.json         # Root package configuration
 ```
 
-### Remote Caching
+## 🤝 Contributing
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+1. Follow the established patterns in each app
+2. Use shared types from `@repo/types`
+3. Run `pnpm lint` and `pnpm check-types` before committing
+4. Use `pnpm format` to maintain consistent code style
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## 🎯 Next Steps
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+1. Set up your environment variables
+2. Configure Clerk authentication keys
+3. Set up MongoDB database
+4. Add your Google Gemini API key for AI features
+5. Start developing! 🚀

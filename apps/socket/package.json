@@ -1,0 +1,29 @@
+{
+  "name": "socket",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src/ --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/types": "workspace:*",
+    "socket.io": "^4.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "@clerk/express": "^1.0.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.34.0",
+    "tsx": "^4.7.0",
+    "typescript": "5.9.2"
+  }
+}
