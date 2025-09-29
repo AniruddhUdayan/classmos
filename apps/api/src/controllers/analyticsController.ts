@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Quiz, Score, User } from '../models';
+import { Quiz, Score, User } from '../models/index.js';
 
 export const getEducatorAnalytics = async (req: Request, res: Response) => {
   try {

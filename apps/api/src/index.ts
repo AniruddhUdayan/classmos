@@ -4,15 +4,15 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import type { ApiResponse } from '@repo/types';
-import connectDB from './db';
-import { requireAuth, requireRole } from './middleware/auth';
-import { getCurrentUser, createUser, getAllUsers } from './controllers/userController';
-import { createQuiz, getQuizzes, getQuizById } from './controllers/quizController';
-import { submitScore, getScores, getLeaderboard } from './controllers/scoreController';
-import { getUserProgress, getProgressAnalytics } from './controllers/progressController';
-import { sendChatMessage, getChatSessions, getChatSession, updateChatSession } from './controllers/chatController';
-import { getEducatorAnalytics, getAllStudents, getQuizResults, getClassAnalytics } from './controllers/analyticsController';
-import { getUserGamificationSummary, getAllBadges, getEnhancedLeaderboard, getUserLevelProgress, getUserAchievements } from './controllers/gamificationController';
+import connectDB from './db.js';
+import { requireAuth, requireRole } from './middleware/auth.js';
+import { getCurrentUser, createUser, getAllUsers } from './controllers/userController.js';
+import { createQuiz, getQuizzes, getQuizById } from './controllers/quizController.js';
+import { submitScore, getScores, getLeaderboard } from './controllers/scoreController.js';
+import { getUserProgress, getProgressAnalytics } from './controllers/progressController.js';
+import { sendChatMessage, getChatSessions, getChatSession, updateChatSession } from './controllers/chatController.js';
+import { getEducatorAnalytics, getAllStudents, getQuizResults, getClassAnalytics } from './controllers/analyticsController.js';
+import { getUserGamificationSummary, getAllBadges, getEnhancedLeaderboard, getUserLevelProgress, getUserAchievements } from './controllers/gamificationController.js';
 
 dotenv.config();
 
@@ -98,7 +98,7 @@ app.get('/api/gamification/achievements', requireAuth, getUserAchievements);
 // Test endpoint for Gemini API (no auth required for testing)
 app.post('/api/test-gemini', async (req, res) => {
   try {
-    const { getTutorResponse } = await import('./utils/gemini');
+        const { getTutorResponse } = await import('./utils/gemini.js');
     const message = req.body.message || 'Hello, can you explain what photosynthesis is?';
     
     console.log('🧪 Testing Gemini API with message:', message);

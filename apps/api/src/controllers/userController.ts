@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { createClerkClient } from '@clerk/express';
-import { User } from '../models';
+import { User } from '../models/index.js';
 import type { ApiResponse, QuizUser } from '@repo/types';
 
 // Create Clerk client with hardcoded key

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Quiz, User } from '../models';
-import { generateQuiz } from '../utils/gemini';
+import { Quiz, User } from '../models/index.js';
+import { generateQuiz } from '../utils/gemini.js';
 import type { ApiResponse, Quiz as QuizType, CreateQuizRequest } from '@repo/types';
 
 /**

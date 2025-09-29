@@ -1,4 +1,4 @@
-import { User, Score, Leaderboard } from '../models';
+import { User, Score, Leaderboard } from '../models/index.js';
 import { createClerkClient } from '@clerk/clerk-sdk-node';
 
 // Create Clerk client with the secret key

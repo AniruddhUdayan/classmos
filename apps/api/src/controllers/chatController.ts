@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { ChatLog, User } from '../models';
-import { getTutorResponse } from '../utils/gemini';
+import { ChatLog, User } from '../models/index.js';
+import { getTutorResponse } from '../utils/gemini.js';
 import type { ApiResponse, ChatRequest, TutorChatSession, TutorChatMessage } from '@repo/types';
 import mongoose from 'mongoose';
 

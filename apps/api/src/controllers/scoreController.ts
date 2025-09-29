@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { Score, Quiz, User } from '../models';
-import { GamificationService } from '../services/gamificationService';
+import { Score, Quiz, User } from '../models/index.js';
+import { GamificationService } from '../services/gamificationService.js';
 import type { ApiResponse, QuizScore, SubmitScoreRequest } from '@repo/types';
 
 /**

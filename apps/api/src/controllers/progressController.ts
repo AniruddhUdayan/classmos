@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Score, Quiz, User } from '../models';
-import { analyzeWeakTopics } from '../utils/gemini';
+import { Score, Quiz, User } from '../models/index.js';
+import { analyzeWeakTopics } from '../utils/gemini.js';
 import type { ApiResponse, UserProgress, QuizScore } from '@repo/types';
 import type { IQuiz } from '../models/Quiz';
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { User } from '../models';
-import { GamificationService, BADGE_DEFINITIONS } from '../services/gamificationService';
+import { User } from '../models/index.js';
+import { GamificationService, BADGE_DEFINITIONS } from '../services/gamificationService.js';
 import type { ApiResponse } from '@repo/types';
 
 /**
