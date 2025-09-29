@@ -74,7 +74,7 @@ export default function LeaderboardPage() {
 
           // Fetch user role and other data
           const [userData, quizData, leaderboardData, gamificationData] = await Promise.all([
-            fetch('http://localhost:4000/api/me', {
+            fetch('http://165.22.212.124:4000/api/me', {
               headers: { 'Authorization': `Bearer ${token}` }
             }).then(res => res.ok ? res.json() : null),
             apiClient.getQuizzes(token, { limit: 20 }),

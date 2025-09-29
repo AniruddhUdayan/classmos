@@ -11,7 +11,7 @@ import type {
 } from '@repo/types';
 import { SocketEvents } from '@repo/types';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4001';
+const SOCKET_URL = 'http://165.22.212.124:4001';
 
 // Socket context hook for quiz functionality
 export function useQuizSocket(): {

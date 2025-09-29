@@ -1,27 +1,28 @@
 # Classmos - Educational Platform
 
-A modern educational platform built with turborepo, featuring real-time communication and AI-powered features.
+A modern educational platform built with Next.js, Express.js, and Socket.io, featuring real-time communication and AI-powered tutoring.
+
+## 🌐 Live Application
+
+**Frontend:** [https://classmos.vercel.app](https://classmos.vercel.app)
 
 ## 🏗️ Architecture
 
 This monorepo contains:
-
-- **`apps/web`** - Next.js frontend application
-- **`apps/api`** - Express.js REST API server  
-- **`apps/socket`** - Socket.io WebSocket server for real-time features
+- **`apps/web`** - Next.js frontend application (Port 3000)
+- **`apps/api`** - Express.js REST API server (Port 4000)
+- **`apps/socket`** - Socket.io WebSocket server for real-time features (Port 4001)
 - **`packages/types`** - Shared TypeScript types and interfaces
 - **`packages/ui`** - Shared React components
-- **`packages/eslint-config`** - Shared ESLint configuration
-- **`packages/typescript-config`** - Shared TypeScript configuration
 
-## 🚀 Quick Start
+## 🚀 Quick Setup
 
 ### Prerequisites
-
 - Node.js >= 18
 - pnpm >= 9.0.0
+- MongoDB (local or Atlas)
 
-### Installation
+### Local Installation
 
 1. **Clone and install dependencies:**
    ```bash
@@ -32,22 +33,331 @@ This monorepo contains:
 
 2. **Set up environment variables:**
    ```bash
-   cp .env.example .env
-   # Edit .env with your actual API keys and database URLs
+   # Create .env file in root directory
+   # Add your MongoDB URI and API keys
+   MONGODB_URI=your_mongodb_connection_string
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   GEMINI_API_KEY=your_gemini_api_key
    ```
 
-3. **Start development servers:**
+3. **Build the project:**
    ```bash
-   # Start all services in development mode
+   pnpm build
+   ```
+
+4. **Start development servers:**
+   ```bash
+   # Start all services
    pnpm dev
    
-   # Or start individual services:
-   pnpm --filter web dev       # Frontend (port 3000)
-   pnpm --filter api dev       # API server (port 4000)  
-   pnpm --filter socket dev    # Socket server (port 4001)
+   # Or start individually:
+   pnpm --filter web dev       # Frontend (http://localhost:3000)
+   pnpm --filter api dev       # API server (http://localhost:4000)
+   pnpm --filter socket dev    # Socket server (http://localhost:4001)
    ```
 
-## 📦 Package Scripts
+### Docker Setup
+
+1. **Build and run with Docker Compose:**
+   ```bash
+   # Build all services
+   docker-compose build
+   
+   # Start all services
+   docker-compose up -d
+   
+   # View logs
+   docker-compose logs -f
+   
+   # Stop services
+   docker-compose down
+   ```
+
+2. **Access the application:**
+   - Frontend: http://localhost:3000
+   - API: http://localhost:4000
+   - Socket: http://localhost:4001
+
+## 📊 MongoDB Schema
+
+### Users Collection
+```javascript
+{
+  _id: ObjectId,
+  clerkId: String,           // Clerk user ID
+  name: String,              // User's full name
+  email: String,             // User's email
+  role: String,              // "student" | "educator"
+  createdAt: Date,
+  updatedAt: Date,
+  badges: [String],          // Array of earned badges
+  totalScore: Number,        // Total gamification score
+  level: Number,             // User level
+  xp: Number                 // Experience points
+}
+```
+
+### Quizzes Collection
+```javascript
+{
+  _id: ObjectId,
+  title: String,             // Quiz title
+  description: String,       // Quiz description
+  subject: String,           // Subject category
+  questions: [{
+    question: String,        // Question text
+    options: [String],       // Answer options
+    correctAnswer: Number,   // Index of correct answer
+    explanation: String      // Explanation for answer
+  }],
+  createdBy: ObjectId,       // Reference to User
+  timeLimit: Number,         // Time limit in minutes
+  isActive: Boolean,         // Whether quiz is active
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+### Scores Collection
+```javascript
+{
+  _id: ObjectId,
+  userId: ObjectId,          // Reference to User
+  quizId: ObjectId,          // Reference to Quiz
+  score: Number,             // Final score
+  totalQuestions: Number,    // Total questions
+  correctAnswers: Number,    // Correct answers
+  timeSpent: Number,         // Time spent in seconds
+  answers: [{
+    questionIndex: Number,   // Question index
+    selectedAnswer: Number,  // Selected answer index
+    isCorrect: Boolean,      // Whether answer is correct
+    timeSpent: Number        // Time spent on this question
+  }],
+  completedAt: Date,
+  createdAt: Date
+}
+```
+
+### Chat Sessions Collection
+```javascript
+{
+  _id: ObjectId,
+  sessionId: String,         // Unique session identifier
+  userId: ObjectId,          // Reference to User
+  messages: [{
+    role: String,            // "user" | "tutor"
+    content: String,         // Message content
+    timestamp: Date,
+    suggestions: [String]    // AI-generated suggestions
+  }],
+  isActive: Boolean,         // Whether session is active
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## 🔌 API Documentation
+
+### Base URL
+- **Local:** `http://localhost:4000`
+- **Production:** `http://165.22.212.124:4000`
+
+### Authentication
+All API endpoints require authentication via Clerk JWT token:
+```javascript
+headers: {
+  'Authorization': `Bearer ${token}`
+}
+```
+
+### User Endpoints
+
+#### GET `/api/me`
+Get current user information.
+```javascript
+// Response
+{
+  success: true,
+  data: {
+    _id: "user_id",
+    clerkId: "clerk_user_id",
+    name: "John Doe",
+    email: "john@example.com",
+    role: "student",
+    badges: ["first_quiz"],
+    totalScore: 100,
+    level: 1,
+    xp: 150
+  }
+}
+```
+
+#### POST `/api/users`
+Create a new user.
+```javascript
+// Request Body
+{
+  name: "John Doe",
+  email: "john@example.com",
+  role: "student"
+}
+```
+
+### Quiz Endpoints
+
+#### GET `/api/quizzes`
+Get quizzes with optional filters.
+```javascript
+// Query Parameters
+?subject=math&limit=10&page=1&my_quizzes=true
+
+// Response
+{
+  success: true,
+  data: [
+    {
+      _id: "quiz_id",
+      title: "Math Basics",
+      description: "Basic math questions",
+      subject: "math",
+      questions: [...],
+      timeLimit: 30,
+      isActive: true
+    }
+  ]
+}
+```
+
+#### GET `/api/quizzes/:id`
+Get a specific quiz by ID.
+
+#### POST `/api/quizzes`
+Create a new quiz.
+```javascript
+// Request Body
+{
+  title: "New Quiz",
+  description: "Quiz description",
+  subject: "math",
+  questions: [
+    {
+      question: "What is 2+2?",
+      options: ["3", "4", "5", "6"],
+      correctAnswer: 1,
+      explanation: "2+2 equals 4"
+    }
+  ],
+  timeLimit: 30
+}
+```
+
+### Score Endpoints
+
+#### POST `/api/scores`
+Submit quiz score.
+```javascript
+// Request Body
+{
+  quizId: "quiz_id",
+  score: 8,
+  totalQuestions: 10,
+  correctAnswers: 8,
+  timeSpent: 1200,
+  answers: [
+    {
+      questionIndex: 0,
+      selectedAnswer: 1,
+      isCorrect: true,
+      timeSpent: 30
+    }
+  ]
+}
+```
+
+#### GET `/api/scores`
+Get user scores with optional filters.
+```javascript
+// Query Parameters
+?quizId=quiz_id&limit=10&page=1
+```
+
+#### GET `/api/scores/leaderboard`
+Get leaderboard data.
+```javascript
+// Query Parameters
+?quizId=quiz_id&limit=50
+
+// Response
+{
+  success: true,
+  data: [
+    {
+      userId: "user_id",
+      name: "John Doe",
+      score: 95,
+      rank: 1
+    }
+  ]
+}
+```
+
+### Chat Endpoints
+
+#### GET `/api/chat/sessions`
+Get user's chat sessions.
+```javascript
+// Query Parameters
+?limit=10&active_only=true
+```
+
+#### POST `/api/chat/message`
+Send a message to AI tutor.
+```javascript
+// Request Body
+{
+  message: "Explain quadratic equations",
+  sessionId: "optional_session_id"
+}
+
+// Response
+{
+  success: true,
+  session: {
+    sessionId: "session_id",
+    messages: [...],
+    isActive: true
+  },
+  suggestions: ["Try practice problems", "Review basics"]
+}
+```
+
+### Gamification Endpoints
+
+#### GET `/api/gamification/leaderboard`
+Get gamification leaderboard.
+```javascript
+// Query Parameters
+?limit=50
+
+// Response
+{
+  success: true,
+  data: [
+    {
+      userId: "user_id",
+      name: "John Doe",
+      totalScore: 1500,
+      level: 5,
+      xp: 2500,
+      badges: ["math_master", "quick_learner"],
+      rank: 1
+    }
+  ]
+}
+```
+
+## 🔧 Development Scripts
 
 ### Root Commands
 - `pnpm dev` - Start all apps in development mode
@@ -55,126 +365,32 @@ This monorepo contains:
 - `pnpm lint` - Lint all packages
 - `pnpm format` - Format code with Prettier
 - `pnpm check-types` - Type check all packages
-- `pnpm clean` - Clean all build artifacts
 
 ### Individual Apps
 - `pnpm --filter web <script>` - Run script in web app
 - `pnpm --filter api <script>` - Run script in API app
 - `pnpm --filter socket <script>` - Run script in socket app
 
-## 🔧 Environment Variables
+## 🛠️ Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+Create a `.env` file in the root directory:
 
 ```env
-# Clerk Authentication
-CLERK_API_KEY=your_clerk_secret_key
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+# Database
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/classmos
+
+# Authentication (Clerk)
+CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
 
 # AI Integration (Google Gemini)
 GEMINI_API_KEY=your_gemini_api_key
 
-# Database
-MONGODB_URI=mongodb://localhost:27017/classmos
-
 # Server Configuration
-PORT=4000                    # API server port
-SOCKET_PORT=4001            # Socket server port
-FRONTEND_URL=http://localhost:3000
-
-# Development
+PORT=4000
+SOCKET_PORT=4001
 NODE_ENV=development
 ```
-
-## 🏢 Application Details
-
-### Frontend (`apps/web`)
-- **Framework:** Next.js 15 with App Router
-- **Authentication:** Clerk
-- **Real-time:** Socket.io client
-- **Styling:** CSS Modules + Global CSS
-- **Port:** 3000
-
-### API Server (`apps/api`)
-- **Framework:** Express.js
-- **Database:** MongoDB with Mongoose
-- **Authentication:** Clerk Express middleware
-- **Port:** 4000
-
-**Key endpoints:**
-- `GET /health` - Health check
-- `GET /api/users` - User management
-
-### Socket Server (`apps/socket`)
-- **Framework:** Socket.io
-- **Authentication:** Clerk integration
-- **Port:** 4001
-
-**Supported events:**
-- `user:join/leave` - User presence
-- `room:join/leave` - Room management  
-- `chat:message` - Real-time messaging
-- `chat:typing` - Typing indicators
-
-## 📚 Shared Packages
-
-### `@repo/types`
-Shared TypeScript interfaces and types used across all applications:
-- User and authentication types
-- API response structures
-- Chat and messaging types
-- Class and education types
-
-### `@repo/ui`
-Shared React components and UI elements.
-
-### `@repo/eslint-config`
-Shared ESLint configurations for consistent code style.
-
-### `@repo/typescript-config`
-Shared TypeScript configurations with sensible defaults.
-
-## 🛠️ Development Workflow
-
-### Adding Dependencies
-
-```bash
-# Add to specific app
-pnpm --filter web add <package>
-pnpm --filter api add <package>
-
-# Add to workspace root
-pnpm add -w <package>
-
-# Add to shared package
-pnpm --filter @repo/types add <package>
-```
-
-### Creating New Packages
-
-1. Create directory in `packages/` or `apps/`
-2. Add `package.json` with appropriate workspace dependencies
-3. Update `pnpm-workspace.yaml` if needed (usually automatic)
-
-### Database Setup
-
-1. **Install MongoDB locally or use MongoDB Atlas**
-2. **Update MONGODB_URI in .env**
-3. **Start the API server** - it will auto-connect to MongoDB
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-1. **Port conflicts:** Check if ports 3000, 4000, 4001 are available
-2. **MongoDB connection:** Ensure MongoDB is running and URI is correct
-3. **Dependencies:** Run `pnpm install` at root to sync all packages
-
-### Logs
-
-- **Frontend:** Check browser console and terminal
-- **API:** Check terminal for Express server logs
-- **Socket:** Check terminal for Socket.io connection logs
 
 ## 📁 Project Structure
 
@@ -189,11 +405,27 @@ classmos/
 │   ├── ui/               # Shared React components
 │   ├── eslint-config/    # ESLint configurations
 │   └── typescript-config/ # TypeScript configurations
+├── docker/               # Docker configurations
+├── docker-compose.yml    # Docker Compose setup
 ├── .env.example          # Environment variables template
 ├── turbo.json           # Turborepo configuration
-├── pnpm-workspace.yaml  # pnpm workspace configuration
 └── package.json         # Root package configuration
 ```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Port conflicts:** Ensure ports 3000, 4000, 4001 are available
+2. **MongoDB connection:** Verify MongoDB URI and network access
+3. **Authentication:** Check Clerk keys are correctly configured
+4. **Dependencies:** Run `pnpm install` at root to sync all packages
+
+### Docker Issues
+
+1. **Build failures:** Check Docker is running and has sufficient resources
+2. **Port conflicts:** Stop local services before running Docker
+3. **Environment variables:** Ensure all required env vars are set
 
 ## 🤝 Contributing
 
@@ -202,19 +434,10 @@ classmos/
 3. Run `pnpm lint` and `pnpm check-types` before committing
 4. Use `pnpm format` to maintain consistent code style
 
-## 🎯 Next Steps
+## 📞 Support
 
-<<<<<<< Current (Your changes)
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
-=======
-1. Set up your environment variables
-2. Configure Clerk authentication keys
-3. Set up MongoDB database
-4. Add your Google Gemini API key for AI features
-5. Start developing! 🚀
->>>>>>> Incoming (Background Agent changes)
+For issues or questions, please check the troubleshooting section or create an issue in the repository.
+
+---
+
+**Built with ❤️ using Next.js, Express.js, Socket.io, and MongoDB**
