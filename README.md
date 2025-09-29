@@ -4,7 +4,7 @@ A modern educational platform built with Next.js, Express.js, and Socket.io, fea
 
 ## 🌐 Live Application
 
-**Frontend:** [https://classmos.vercel.app](https://classmos.vercel.app)
+**Frontend:** [http://165.22.212.124:3000/](http://165.22.212.124:3000/)
 
 ## 🏗️ Architecture
 
@@ -31,21 +31,12 @@ This monorepo contains:
    pnpm install
    ```
 
-2. **Set up environment variables:**
-   ```bash
-   # Create .env file in root directory
-   # Add your MongoDB URI and API keys
-   MONGODB_URI=your_mongodb_connection_string
-   CLERK_SECRET_KEY=your_clerk_secret_key
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
-
-3. **Build the project:**
+2. **Build the project:**
    ```bash
    pnpm build
    ```
 
-4. **Start development servers:**
+3. **Start development servers:**
    ```bash
    # Start all services
    pnpm dev
@@ -371,26 +362,6 @@ Get gamification leaderboard.
 - `pnpm --filter api <script>` - Run script in API app
 - `pnpm --filter socket <script>` - Run script in socket app
 
-## 🛠️ Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Database
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/classmos
-
-# Authentication (Clerk)
-CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
-
-# AI Integration (Google Gemini)
-GEMINI_API_KEY=your_gemini_api_key
-
-# Server Configuration
-PORT=4000
-SOCKET_PORT=4001
-NODE_ENV=development
-```
 
 ## 📁 Project Structure
 
@@ -418,14 +389,13 @@ classmos/
 
 1. **Port conflicts:** Ensure ports 3000, 4000, 4001 are available
 2. **MongoDB connection:** Verify MongoDB URI and network access
-3. **Authentication:** Check Clerk keys are correctly configured
-4. **Dependencies:** Run `pnpm install` at root to sync all packages
+3. **Dependencies:** Run `pnpm install` at root to sync all packages
 
 ### Docker Issues
 
 1. **Build failures:** Check Docker is running and has sufficient resources
 2. **Port conflicts:** Stop local services before running Docker
-3. **Environment variables:** Ensure all required env vars are set
+3. **Network access:** Ensure the application can access external services
 
 ## 🤝 Contributing
 
