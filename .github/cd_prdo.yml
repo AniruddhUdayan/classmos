@@ -1,0 +1,39 @@
+name: Deploy to prod environment
+
+on:
+  push:
+    branches: 
+      - "main"
+
+jobs:
+  re-deploy-to-prod:
+    name: Redploy changes to prod environment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "SSH into machine, pull and build all the code files and start pm2"
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SECRET_KEY }}" > ~/.ssh/ssh_key_prod
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/ssh_key_prod
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_key_prod root@165.22.212.124 -t "
+            export NVM_DIR=\$HOME/.nvm
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"
+            [ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"
+            cd classmos && git pull
+            # Clear Turbo cache to ensure fresh builds
+            rm -rf .turbo
+            rm -rf apps/web/.next
+            pnpm install
+            cd packages/types
+            pnpm install
+            cd ../..
+            pnpm install
+            # Force rebuild with cache bypass
+            pnpm turbo build --force
+            pm2 restart all || pm2 start ecosystem.config.json  
+          "

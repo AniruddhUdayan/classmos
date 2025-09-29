@@ -19,7 +19,8 @@ import { SocketEvents } from '@repo/types';
 // Load environment variables
 dotenv.config();
 
-const PORT = process.env.SOCKET_PORT || 4001;
+// Hardcode socket port to avoid env issues temporarily
+const PORT = 4001;
 
 // Create HTTP server
 const httpServer = createServer();
@@ -27,7 +28,7 @@ const httpServer = createServer();
 // Create Socket.IO server with CORS
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
     credentials: true,
   },

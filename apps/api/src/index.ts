@@ -17,7 +17,8 @@ import { getUserGamificationSummary, getAllBadges, getEnhancedLeaderboard, getUs
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+// Hardcode port to avoid env issues temporarily
+const PORT = 4000;
 
 app.use(helmet());
 app.use(cors());

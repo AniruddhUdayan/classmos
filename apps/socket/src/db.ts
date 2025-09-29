@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-// Use the same MongoDB Atlas connection as the API server
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://aniruddhudayan34_db_user:wC5qd6lEgrV7Ykvp@classmos.elsikty.mongodb.net/classmos?retryWrites=true&w=majority';
+// Use the same MongoDB Atlas connection as the API server (hardcoded temporarily)
+const MONGODB_URI = 'mongodb+srv://aniruddhudayan34_db_user:wC5qd6lEgrV7Ykvp@classmos.elsikty.mongodb.net/classmos?retryWrites=true&w=majority';
 
 let isConnected = false;
 
