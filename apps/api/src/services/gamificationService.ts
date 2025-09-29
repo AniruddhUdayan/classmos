@@ -344,12 +344,16 @@ export class GamificationService {
         {
           userId: user._id,
           username: user.name,
+          // totalScore combines XP and streaks for tie-breakers (kept for compatibility)
+          totalScore: (user.totalXP || 0) + (user.currentStreak || 0) * 10,
           totalXP: user.totalXP || 0,
           currentStreak: user.currentStreak || 0,
           totalQuizzes: user.totalQuizzes || 0,
           averageScore: user.averageAccuracy || 0,
           badges: (user.badges || []).length,
-          rank: 0, // Will be calculated separately
+          // Level derived from total XP (100 XP per level, minimum 1)
+          level: Math.floor((user.totalXP || 0) / 100) + 1,
+          rank: 0, // Will be recalculated separately
           lastUpdated: new Date()
         },
         { upsert: true, new: true }

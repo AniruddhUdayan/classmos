@@ -278,7 +278,7 @@ export default function EducatorDashboard() {
                       <p className="text-sm text-gray-500">{student.totalQuizzes} quizzes</p>
                     </div>
                   </div>
-                  <Badge variant="default" className="bg-green-600">
+                  <Badge variant="default" className="bg-green-600 text-white">
                     {student.bestScore}%
                   </Badge>
                 </div>
@@ -306,7 +306,7 @@ export default function EducatorDashboard() {
                       <p className="text-sm text-gray-600">
                         {new Date(quiz.createdAt).toLocaleDateString()}
                       </p>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs text-gray-800 border-gray-300">
                         {quiz.isPublic ? 'Public' : 'Private'}
                       </Badge>
                     </div>
@@ -338,7 +338,7 @@ export default function EducatorDashboard() {
                     <span className="text-sm font-medium text-gray-900">{participant.username}</span>
                   </div>
                   {participant.currentScore !== undefined && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs text-gray-800">
                       {participant.currentScore} pts
                     </Badge>
                   )}

@@ -7,6 +7,7 @@ import { apiClient } from '../../../../lib/api';
 import { useQuizSocket } from '../../../../lib/socket';
 import type { Quiz, CreateQuizRequest, QuizScore } from '@repo/types';
 import { Button, Badge, Input } from '@repo/ui';
+import { motion } from 'framer-motion';
 import RoleGuard from '../../../components/RoleGuard';
 
 interface QuizWithStats extends Quiz {
@@ -196,6 +197,41 @@ export default function EducatorQuizzesPage() {
   return (
     <RoleGuard allowedRoles={['educator', 'admin']} fallbackPath="/dashboard/student">
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {creating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center border border-gray-100"
+          >
+            <div className="mx-auto mb-4 w-16 h-16 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin" />
+            <h3 className="text-2xl font-bold text-gray-900">Creating your quiz…</h3>
+            <p className="text-gray-600 mt-1">Gemini is generating high‑quality questions.</p>
+
+            <div className="mt-6 space-y-3 text-left">
+              <div className="flex items-center space-x-3">
+                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                <span className="text-sm text-gray-700">Drafting questions</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
+                <span className="text-sm text-gray-700">Balancing options</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
+                <span className="text-sm text-gray-700">Finalizing correct answers</span>
+              </div>
+            </div>
+
+            <div className="mt-6 h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-2 w-1/3 bg-gradient-to-r from-blue-500 to-purple-600 animate-[progress_1.4s_ease_infinite] rounded-full" />
+            </div>
+
+            <p className="mt-4 text-xs text-gray-500">This can take a few seconds depending on difficulty and question count.</p>
+          </motion.div>
+        </div>
+      )}
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -358,12 +394,12 @@ export default function EducatorQuizzesPage() {
                         <p className="text-sm text-gray-600">{quiz.subject}</p>
                       </div>
                       <div className="flex space-x-2">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs text-gray-800">
                           {quiz.questions.length} questions
                         </Badge>
                         <Badge 
                           variant={quiz.isPublic ? 'default' : 'outline'}
-                          className="text-xs"
+                          className="text-xs text-gray-800"
                         >
                           {quiz.isPublic ? 'Public' : 'Private'}
                         </Badge>

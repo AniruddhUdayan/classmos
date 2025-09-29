@@ -283,7 +283,7 @@ io.on('connection', socket => {
     }
   });
 
-  // Handle quiz completion
+  // Handle quiz completion (no DB write here; REST API owns persistence/X P)
   socket.on(SocketEvents.QUIZ_COMPLETED, async (payload: { roomId: string; quizId: string; answers: any[]; timeSpent: number }) => {
     try {
       const userId = socketUserMap.get(socket.id);
@@ -292,13 +292,9 @@ io.on('connection', socket => {
         return;
       }
 
-      // Save final score to database
-      const result = await QuizService.saveScore(
-        userId,
-        payload.quizId,
-        payload.answers,
-        payload.timeSpent
-      );
+      // Expect REST API to have already persisted score and XP.
+      // Here we only compute leaderboard from DB and broadcast completion.
+      const result = { score: { score: 0, accuracy: 0, totalQuestions: 0, correctAnswers: 0, timeSpent: payload.timeSpent } } as any;
 
       // Update participant as completed
       const room = QuizService.getQuizRoom(payload.roomId);
@@ -315,11 +311,11 @@ io.on('connection', socket => {
       const completionData: QuizCompletedPayload = {
         userId,
         username: participant?.username || 'Unknown',
-        finalScore: result.score.score,
-        accuracy: result.score.accuracy,
-        totalQuestions: result.score.totalQuestions,
-        correctAnswers: result.score.correctAnswers,
-        timeSpent: result.score.timeSpent,
+        finalScore: leaderboard.find(e => e.userId === userId)?.score || 0,
+        accuracy: leaderboard.find(e => e.userId === userId)?.accuracy || 0,
+        totalQuestions: leaderboard.find(e => e.userId === userId)?.totalAnswered || 0,
+        correctAnswers: 0,
+        timeSpent: payload.timeSpent,
         rank: userRank
       };
 

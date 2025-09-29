@@ -46,6 +46,13 @@ export default function LeaderboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<'student' | 'educator' | 'admin' | null>(null);
 
+  // Debounce selected quiz id to avoid rapid multiple calls
+  const [debouncedQuizId, setDebouncedQuizId] = useState<string>('');
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuizId(selectedQuizId), 200);
+    return () => clearTimeout(t);
+  }, [selectedQuizId]);
+
   // Socket for live updates
   const { 
     isConnected, 
@@ -97,13 +104,13 @@ export default function LeaderboardPage() {
   // Fetch quiz-specific leaderboard when quiz is selected
   useEffect(() => {
     const fetchQuizLeaderboard = async () => {
-      if (selectedQuizId && user) {
+      if (debouncedQuizId && user) {
         try {
           const token = await getToken();
           if (!token) return;
 
           const leaderboardData = await apiClient.getLeaderboard(token, { 
-            quizId: selectedQuizId, 
+            quizId: debouncedQuizId, 
             limit: 20 
           });
           setStaticLeaderboard(leaderboardData);
@@ -113,10 +120,10 @@ export default function LeaderboardPage() {
       }
     };
 
-    if (selectedQuizId) {
+    if (debouncedQuizId) {
       fetchQuizLeaderboard();
     }
-  }, [selectedQuizId, user, getToken]);
+  }, [debouncedQuizId, user, getToken]);
 
   const connectToLiveRoom = () => {
     if (selectedQuizId && user && isConnected) {
@@ -175,7 +182,7 @@ export default function LeaderboardPage() {
                 </span>
               </div>
               {isLiveData && (
-                <Badge variant="default" className="bg-green-600">
+                <Badge variant="default" className="bg-green-600 text-white">
                   Live Data
                 </Badge>
               )}
@@ -264,7 +271,7 @@ export default function LeaderboardPage() {
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                   <span className="text-sm text-blue-800">{participant.username}</span>
                   {participant.currentScore !== undefined && (
-                    <Badge variant="outline" className="ml-2 text-xs">
+                    <Badge variant="outline" className="ml-2 text-xs text-gray-800">
                       {participant.currentScore}
                     </Badge>
                   )}
@@ -445,7 +452,7 @@ export default function LeaderboardPage() {
                               <div className="text-sm font-medium text-gray-900">
                                 {isLiveData ? (entry as any).username : (entry as any).userName}
                                 {isCurrentUser && (
-                                  <Badge variant="outline" className="ml-2 text-xs">You</Badge>
+                                  <Badge variant="outline" className="ml-2 text-xs text-gray-800">You</Badge>
                                 )}
                               </div>
                               <div className="text-sm text-gray-500">

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { Score, Quiz, User } from '../models';
 import { GamificationService } from '../services/gamificationService';
 import type { ApiResponse, QuizScore, SubmitScoreRequest } from '@repo/types';
@@ -240,10 +241,15 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     }
 
     const { quizId, limit = 10 } = req.query;
-    
+
     let matchStage: any = {};
     if (quizId) {
-      matchStage.quizId = quizId;
+      // quizId in Score is an ObjectId. Cast incoming string to ObjectId to match correctly.
+      try {
+        matchStage.quizId = new mongoose.Types.ObjectId(String(quizId));
+      } catch {
+        return res.status(400).json({ success: false, error: 'Invalid quizId' });
+      }
     }
 
     // Get top scores with user info

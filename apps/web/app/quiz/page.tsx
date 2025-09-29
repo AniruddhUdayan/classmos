@@ -168,7 +168,10 @@ export default function QuizPage() {
         timeSpent: totalTime
       };
 
-      // If connected to a live room, complete via socket only (avoid duplicate DB writes)
+      // Always persist via REST API so XP is computed consistently server-side
+      await apiClient.submitScore(token, scoreData);
+
+      // Then notify the live room (no DB write on socket side)
       if (isConnected && isInRoom) {
         socketActions.completeQuiz({
           roomId,
@@ -179,9 +182,6 @@ export default function QuizPage() {
           })),
           timeSpent: totalTime
         });
-      } else {
-        // Fallback to REST API when not in a live socket room
-        await apiClient.submitScore(token, scoreData);
       }
     } catch (error) {
       console.error('Error submitting quiz:', error);
