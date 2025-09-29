@@ -74,10 +74,16 @@ export default function EducatorQuizzesPage() {
             return;
           }
 
-          const analyticsData = await apiClient.getEducatorAnalytics(token);
+          // Fetch quizzes directly
+          const quizzesData = await apiClient.getQuizzes(token);
           
-          // Use real quiz stats from the analytics API
-          const quizzesWithStats: QuizWithStats[] = analyticsData.quizStats || [];
+          // Convert to QuizWithStats format with default stats
+          const quizzesWithStats: QuizWithStats[] = quizzesData.map(quiz => ({
+            ...quiz,
+            totalAttempts: 0,
+            averageScore: 0,
+            lastAttempted: null
+          }));
 
           setQuizzes(quizzesWithStats);
         } catch (error) {
@@ -92,29 +98,12 @@ export default function EducatorQuizzesPage() {
     fetchQuizzes();
   }, [isLoaded, user, error, getToken]);
 
-  // Fetch quiz results when a quiz is selected
+  // Clear quiz results when quiz is selected (analytics removed)
   useEffect(() => {
-    const fetchQuizResults = async () => {
-      if (selectedQuiz && user) {
-        try {
-          const token = await getToken();
-          if (!token) return;
-
-          const results = await apiClient.getQuizResults(token, selectedQuiz.id, { 
-            limit: 20,
-            offset: 0
-          });
-          setQuizResults(results.results || []);
-        } catch (error) {
-          console.error('Error fetching quiz results:', error);
-        }
-      }
-    };
-
     if (selectedQuiz) {
-      fetchQuizResults();
+      setQuizResults([]); // No analytics data available
     }
-  }, [selectedQuiz, user, getToken]);
+  }, [selectedQuiz]);
 
   const handleCreateQuiz = async () => {
     if (!user || creating) return;

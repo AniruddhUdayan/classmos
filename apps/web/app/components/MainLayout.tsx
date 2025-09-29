@@ -11,7 +11,6 @@ import {
   BookOpenIcon, 
   ChatBubbleLeftIcon, 
   TrophyIcon, 
-  ChartBarIcon,
   Bars3Icon,
   XMarkIcon,
   AcademicCapIcon
@@ -32,7 +31,6 @@ const navigation = [
 const educatorNavigation = [
   { name: 'Dashboard', href: '/dashboard/educator', icon: HomeIcon },
   { name: 'Manage Quizzes', href: '/dashboard/educator/quizzes', icon: BookOpenIcon },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
   { name: 'Leaderboard', href: '/leaderboard', icon: TrophyIcon },
 ];
 

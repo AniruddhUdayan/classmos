@@ -171,47 +171,6 @@ export const apiClient = {
     return response.data.data!;
   },
 
-  // Analytics endpoints (for educators)
-  getEducatorAnalytics: async (token: string): Promise<any> => {
-    const response: AxiosResponse<ApiResponse<any>> = await api.get('/api/analytics/educator', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to fetch educator analytics');
-    }
-    return response.data.data!;
-  },
-
-  getAllStudents: async (token: string): Promise<any> => {
-    const response: AxiosResponse<ApiResponse<any>> = await api.get('/api/analytics/students', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to fetch students data');
-    }
-    return response.data.data!;
-  },
-
-  getQuizResults: async (token: string, quizId: string, params?: { limit?: number; offset?: number }): Promise<any> => {
-    const response: AxiosResponse<ApiResponse<any>> = await api.get(`/api/analytics/quiz/${quizId}/results`, {
-      headers: { Authorization: `Bearer ${token}` },
-      params
-    });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to fetch quiz results');
-    }
-    return response.data.data!;
-  },
-
-  getClassAnalytics: async (token: string): Promise<any> => {
-    const response: AxiosResponse<ApiResponse<any>> = await api.get('/api/analytics/class', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to fetch class analytics');
-    }
-    return response.data.data!;
-  },
 
   // Gamification endpoints
   getGamificationSummary: async (token: string): Promise<any> => {
