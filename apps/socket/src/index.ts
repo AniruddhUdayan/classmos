@@ -1,8 +1,8 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
-import connectDB from './db';
-import { QuizService } from './services/quizService';
+import connectDB from './db.js';
+import { QuizService } from './services/quizService.js';
 import type { 
   ChatMessage, 
   UserPresence, 

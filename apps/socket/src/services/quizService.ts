@@ -1,4 +1,4 @@
-import { User, Quiz, Score } from '../models';
+import { User, Quiz, Score } from '../models/index.js';
 import type { 
   QuizRoomData, 
   QuizParticipant, 
