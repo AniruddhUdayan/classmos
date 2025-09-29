@@ -1,50 +1,172 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* LeetCode-inspired light theme (fallback) */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 45 93% 47%; /* LeetCode gold */
+    --primary-foreground: 26 83% 14%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 45 93% 47%;
+    --radius: 0.75rem;
+    
+    /* LeetCode-specific colors */
+    --leetcode-gold: 45 93% 47%;
+    --leetcode-gold-hover: 45 93% 42%;
+    --leetcode-dark-bg: 240 10% 3.9%;
+    --leetcode-dark-surface: 240 9% 7%;
+    --leetcode-dark-border: 240 8% 12%;
+    --leetcode-success: 142 76% 36%;
+    --leetcode-warning: 45 93% 47%;
+    --leetcode-error: 0 84% 60%;
+  }
+
+  .dark {
+    /* LeetCode-inspired dark theme (default) */
+    --background: 240 10% 3.9%; /* Very dark neutral */
+    --foreground: 0 0% 98%;
+    --card: 240 9% 7%; /* Dark surface */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 9% 7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 45 93% 47%; /* LeetCode gold */
+    --primary-foreground: 26 83% 14%;
+    --secondary: 240 8% 12%; /* Subtle surface */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 8% 12%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 8% 12%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 8% 12%; /* Subtle borders */
+    --input: 240 8% 12%;
+    --ring: 45 93% 47%; /* Gold focus ring */
+    
+    /* Additional dark theme colors */
+    --sidebar-bg: 240 9% 5%; /* Slightly darker for sidebar */
+    --navbar-bg: 240 9% 6%; /* Navbar background */
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.imgDark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  .imgLight {
-    display: none;
+  body {
+    @apply bg-background text-foreground;
   }
-  .imgDark {
-    display: unset;
+}
+
+/* LeetCode-inspired utilities and animations */
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--leetcode-gold)) 0%, hsl(var(--leetcode-gold-hover)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-lg;
+  }
+  
+  .gold-glow {
+    box-shadow: 0 0 20px hsla(var(--leetcode-gold), 0.3);
+  }
+  
+  .sidebar-shadow {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .animate-fade-up {
+    animation: fadeUp 0.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-pulse-gold {
+    animation: pulseGold 2s infinite;
+  }
+  
+  .glass-effect-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+  }
+  
+  .progress-ring {
+    transform: rotate(-90deg);
+    transition: stroke-dasharray 0.3s ease;
+  }
+  
+  .leetcode-border {
+    border: 1px solid hsl(var(--leetcode-dark-border));
+  }
+  
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes pulseGold {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 hsla(var(--leetcode-gold), 0.7);
+    }
+    70% { 
+      box-shadow: 0 0 0 10px hsla(var(--leetcode-gold), 0);
+    }
+  }
+  
+  /* Custom scrollbar for dark theme */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 }

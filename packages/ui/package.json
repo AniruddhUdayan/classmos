@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    ".": "./src/index.ts",
     "./*": "./src/*.tsx"
   },
   "scripts": {
@@ -20,6 +21,7 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }
