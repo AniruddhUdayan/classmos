@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: docker/api-working.Dockerfile
+      dockerfile: docker/api.Dockerfile
     ports:
       - "4000:4000"
     environment:
@@ -11,8 +11,6 @@ services:
       - MONGODB_URI=mongodb+srv://aniruddhudayan34_db_user:wC5qd6lEgrV7Ykvp@classmos.elsikty.mongodb.net/classmos?retryWrites=true&w=majority
       - CLERK_SECRET_KEY=sk_test_obpYuZWfGuRHi9PrkVcXQnILcD5CD7Vvb6auCHYoBh
       - GEMINI_API_KEY=your_gemini_api_key_here
-    depends_on:
-      - socket
     networks:
       - classmos-network
     restart: unless-stopped
@@ -20,7 +18,7 @@ services:
   socket:
     build:
       context: .
-      dockerfile: docker/socket-working.Dockerfile
+      dockerfile: docker/socket.Dockerfile
     ports:
       - "4001:4001"
     environment:
@@ -35,7 +33,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: docker/web-working.Dockerfile
+      dockerfile: docker/web.Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -56,5 +54,3 @@ networks:
   classmos-network:
     driver: bridge
 
-volumes:
-  node_modules:

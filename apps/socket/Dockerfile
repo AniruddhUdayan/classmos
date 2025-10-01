@@ -27,9 +27,6 @@ COPY --from=deps /app/packages ./packages
 COPY --from=build /app/apps/socket/dist ./apps/socket/dist
 COPY apps/socket/package.json ./apps/socket/package.json
 
-# Copy node_modules to app directory for proper resolution
-RUN cp -r /app/node_modules /app/apps/socket/
-
 EXPOSE 4001
 CMD ["node", "apps/socket/dist/index.js"]
 

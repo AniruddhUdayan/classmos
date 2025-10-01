@@ -27,14 +27,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=4000
 
-# Copy workspace structure and dependencies
+# Copy only what's needed to run
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages ./packages
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY apps/api/package.json ./apps/api/package.json
-
-# Copy node_modules to app directory for proper resolution
-RUN cp -r /app/node_modules /app/apps/api/
 
 EXPOSE 4000
 CMD ["node", "apps/api/dist/index.js"]
