@@ -103,10 +103,10 @@ jobs:
             export DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
 
             # Pull latest Docker images from DockerHub
-            sudo -E docker-compose -f docker-compose.prod.yml pull
+            sudo -E docker compose -f docker-compose.prod.yml pull
 
             # Restart containers with new images
-            sudo -E docker-compose -f docker-compose.prod.yml up -d --force-recreate
+            sudo -E docker compose -f docker-compose.prod.yml up -d --force-recreate
 
             # Show running containers
             sudo docker ps
@@ -118,7 +118,7 @@ jobs:
             echo "========================================"
             echo "Service Status:"
             echo "========================================"
-            sudo docker-compose -f docker-compose.prod.yml ps
+            sudo docker compose -f docker-compose.prod.yml ps
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.0.0
