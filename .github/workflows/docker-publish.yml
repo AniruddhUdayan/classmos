@@ -47,14 +47,14 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.image }}
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ matrix.service.image }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -72,9 +72,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.image }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.image }}:buildcache,mode=max
-          build-args: ${{ matrix.service.build-args }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ matrix.service.image }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ matrix.service.image }}:buildcache,mode=max
           platforms: linux/amd64
 
   deploy-to-ec2:
@@ -101,7 +100,7 @@ jobs:
             git pull origin main
 
             # Set Docker Hub username for docker-compose
-            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            export DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
 
             # Pull latest Docker images from DockerHub
             sudo -E docker-compose -f docker-compose.prod.yml pull
@@ -170,9 +169,9 @@ jobs:
       - name: Success notification
         run: |
           echo "✅ All Docker images built and pushed successfully!"
-          echo "API: ${{ secrets.DOCKERHUB_USERNAME }}/classmos-api:latest"
-          echo "Socket: ${{ secrets.DOCKERHUB_USERNAME }}/classmos-socket:latest"
-          echo "Web: ${{ secrets.DOCKERHUB_USERNAME }}/classmos-web:latest"
+          echo "API: ${{ secrets.DOCKER_HUB_USERNAME }}/classmos-api:latest"
+          echo "Socket: ${{ secrets.DOCKER_HUB_USERNAME }}/classmos-socket:latest"
+          echo "Web: ${{ secrets.DOCKER_HUB_USERNAME }}/classmos-web:latest"
           echo ""
           echo "🚀 Deployed to EC2 successfully!"
           echo "Access your application at: ${{ secrets.EC2_PUBLIC_URL }}:3000"
