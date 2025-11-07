@@ -35,10 +35,6 @@ jobs:
             dockerfile: docker/web.Dockerfile
             context: .
             image: classmos-web
-            build-args: |
-              NEXT_PUBLIC_API_URL=${{ secrets.EC2_PUBLIC_URL }}:4000
-              NEXT_PUBLIC_SOCKET_URL=${{ secrets.EC2_PUBLIC_URL }}:4001
-              NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}
 
     steps:
       - name: Checkout code
