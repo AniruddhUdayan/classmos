@@ -29,7 +29,7 @@ RUN pnpm build
 
 # --- runtime layer
 FROM node:20-alpine AS runtime
-WORKDIR /app
+WORKDIR /app/apps/api
 
 # Install curl for health checks
 RUN apk add --no-cache curl
@@ -41,15 +41,17 @@ RUN addgroup -g 1001 -S nodejs && \
 # Set production environment
 ENV NODE_ENV=production
 
-# Copy workspace structure and dependencies
-COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=deps --chown=nodejs:nodejs /app/packages ./packages
-COPY --from=build --chown=nodejs:nodejs /app/apps/api/dist ./apps/api/dist
-COPY --chown=nodejs:nodejs apps/api/package.json ./apps/api/package.json
+# Copy compiled code
+COPY --from=build --chown=nodejs:nodejs /app/apps/api/dist ./dist
+COPY --chown=nodejs:nodejs apps/api/package.json ./package.json
 
-# Copy node_modules to app directory for proper resolution
-RUN cp -r /app/node_modules /app/apps/api/ && \
-    chown -R nodejs:nodejs /app/apps/api/node_modules
+# Copy workspace dependencies
+COPY --from=deps --chown=nodejs:nodejs /app/node_modules /app/node_modules
+COPY --from=deps --chown=nodejs:nodejs /app/packages /app/packages
+
+# Create symlink to node_modules for proper resolution
+RUN ln -s /app/node_modules ./node_modules && \
+    chown -h nodejs:nodejs ./node_modules
 
 # Switch to non-root user
 USER nodejs
@@ -63,4 +65,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # Start the application
-CMD ["node", "apps/api/dist/index.js"]
+CMD ["node", "dist/index.js"]
