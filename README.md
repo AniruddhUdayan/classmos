@@ -4,7 +4,7 @@ A modern educational platform built with Next.js, Express.js, and Socket.io, fea
 
 ## 🌐 Live Application
 
-**Frontend:** [http://165.22.212.124:3000/](http://165.22.212.124:3000/)
+**Frontend:** [http://16.16.78.233:3000/](http://16.16.78.233:3000/)
 
 ## 🏗️ Architecture
 
@@ -152,7 +152,7 @@ This monorepo contains:
 
 ### Base URL
 - **Local:** `http://localhost:4000`
-- **Production:** `http://165.22.212.124:4000`
+- **Production:** `http://16.16.78.233:4000`
 
 ### Authentication
 All API endpoints require authentication via Clerk JWT token:

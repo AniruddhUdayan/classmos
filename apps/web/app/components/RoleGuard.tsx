@@ -49,7 +49,7 @@ export default function RoleGuard({ children, allowedRoles, fallbackPath }: Role
         }
 
         // Get user data from our database (more reliable than Clerk metadata)
-        const response = await fetch('http://165.22.212.124:4000/api/me', {
+        const response = await fetch('http://16.16.78.233:4000/api/me', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

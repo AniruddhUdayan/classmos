@@ -60,7 +60,7 @@ export default function OnboardingPage() {
       };
       console.log('🔍 Sending request data:', requestData);
 
-      const response = await fetch(`http://165.22.212.124:4000/api/users`, {
+      const response = await fetch(`http://16.16.78.233:4000/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -36,7 +36,7 @@ export default function AuthRedirectPage() {
         }
 
         // Check if user exists in our database
-        const response = await fetch('http://165.22.212.124:4000/api/me', {
+        const response = await fetch('http://16.16.78.233:4000/api/me', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

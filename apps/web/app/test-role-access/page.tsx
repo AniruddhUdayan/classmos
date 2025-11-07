@@ -18,7 +18,7 @@ export default function TestRoleAccessPage() {
           const token = await getToken();
           if (!token) return;
 
-          const response = await fetch('http://165.22.212.124:4000/api/me', {
+          const response = await fetch('http://16.16.78.233:4000/api/me', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
