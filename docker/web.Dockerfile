@@ -26,10 +26,10 @@ RUN pnpm --filter @repo/ui build 2>/dev/null || echo "UI package built"
 # Build Web
 WORKDIR /app/apps/web
 
-# Build arguments for Next.js environment variables (optional - can be hardcoded)
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_SOCKET_URL
-ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+# Build arguments for Next.js environment variables with EC2 defaults
+ARG NEXT_PUBLIC_API_URL=http://16.16.78.233:4000
+ARG NEXT_PUBLIC_SOCKET_URL=http://16.16.78.233:4001
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_ZmlsdWVyLW1lbWJlci01NS5jbGVyay5hY2NvdW50cy5kZXYk
 
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_SOCKET_URL=${NEXT_PUBLIC_SOCKET_URL}

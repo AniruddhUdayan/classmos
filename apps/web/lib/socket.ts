@@ -11,7 +11,7 @@ import type {
 } from '@repo/types';
 import { SocketEvents } from '@repo/types';
 
-const SOCKET_URL = 'http://165.22.212.124:4001';
+const SOCKET_URL = 'http://16.16.78.233:4001';
 
 // Socket context hook for quiz functionality
 export function useQuizSocket(): {

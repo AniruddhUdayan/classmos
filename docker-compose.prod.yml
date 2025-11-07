@@ -43,7 +43,7 @@ services:
       - PORT=4001
       - MONGODB_URI=mongodb+srv://aniruddhudayan34_db_user:wC5qd6lEgrV7Ykvp@classmos.elsikty.mongodb.net/classmos?retryWrites=true&w=majority
       - CLERK_SECRET_KEY=sk_test_obpYuZWfGuRHi9PrkVcXQnILcD5CD7Vvb6auCHYoBh
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://16.16.78.233:3000}
     networks:
       - classmos-network
     deploy:

@@ -11,7 +11,7 @@ import type {
   TutorChatSession
 } from '@repo/types';
 
-const API_BASE_URL = 'http://165.22.212.124:4000';
+const API_BASE_URL = 'http://16.16.78.233:4000';
 
 // Create axios instance
 const api = axios.create({
