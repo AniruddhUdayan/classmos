@@ -1,8 +1,16 @@
+# Docker Compose configuration for Classmos monorepo
+# Production-ready setup with health checks, resource limits, and hardcoded configuration
+
+version: '3.9'
+
 services:
+  # API Server (Express.js)
   api:
     build:
       context: .
       dockerfile: docker/api.Dockerfile
+    container_name: classmos-api
+    restart: unless-stopped
     ports:
       - "4000:4000"
     environment:
@@ -13,12 +21,33 @@ services:
       - GEMINI_API_KEY=your_gemini_api_key_here
     networks:
       - classmos-network
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # Socket.io Server (Real-time communication)
   socket:
     build:
       context: .
       dockerfile: docker/socket.Dockerfile
+    container_name: classmos-socket
+    restart: unless-stopped
     ports:
       - "4001:4001"
     environment:
@@ -26,31 +55,78 @@ services:
       - PORT=4001
       - MONGODB_URI=mongodb+srv://aniruddhudayan34_db_user:wC5qd6lEgrV7Ykvp@classmos.elsikty.mongodb.net/classmos?retryWrites=true&w=majority
       - CLERK_SECRET_KEY=sk_test_obpYuZWfGuRHi9PrkVcXQnILcD5CD7Vvb6auCHYoBh
+      - CORS_ORIGIN=http://localhost:3000
     networks:
       - classmos-network
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # Web Frontend (Next.js)
   web:
     build:
       context: .
       dockerfile: docker/web.Dockerfile
+      args:
+        # Build-time environment variables for Next.js
+        NEXT_PUBLIC_API_URL: http://localhost:4000
+        NEXT_PUBLIC_SOCKET_URL: http://localhost:4001
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZmlsdWVyLW1lbWJlci01NS5jbGVyay5hY2NvdW50cy5kZXYk
+    container_name: classmos-web
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_dGVzdC1rZXk
       - CLERK_SECRET_KEY=sk_test_obpYuZWfGuRHi9PrkVcXQnILcD5CD7Vvb6auCHYoBh
       - NEXT_PUBLIC_API_URL=http://localhost:4000
       - NEXT_PUBLIC_SOCKET_URL=http://localhost:4001
-    depends_on:
-      - api
-      - socket
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_ZmlsdWVyLW1lbWJlci01NS5jbGVyay5hY2NvdW50cy5kZXYk
     networks:
       - classmos-network
-    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+      socket:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   classmos-network:
     driver: bridge
-
+    name: classmos-network
