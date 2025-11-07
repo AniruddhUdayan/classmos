@@ -99,14 +99,11 @@ jobs:
             # Pull latest code (includes docker-compose.prod.yml)
             git pull origin main
 
-            # Set Docker Hub username for docker-compose
-            export DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
-
             # Pull latest Docker images from DockerHub
-            sudo -E docker compose -f docker-compose.prod.yml pull
+            DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} sudo -E docker compose -f docker-compose.prod.yml pull
 
             # Restart containers with new images
-            sudo -E docker compose -f docker-compose.prod.yml up -d --force-recreate
+            DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} sudo -E docker compose -f docker-compose.prod.yml up -d --force-recreate
 
             # Show running containers
             sudo docker ps
@@ -118,7 +115,7 @@ jobs:
             echo "========================================"
             echo "Service Status:"
             echo "========================================"
-            sudo docker compose -f docker-compose.prod.yml ps
+            DOCKERHUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} sudo -E docker compose -f docker-compose.prod.yml ps
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.0.0

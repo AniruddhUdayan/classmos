@@ -1,12 +1,10 @@
 # Production Docker Compose for EC2 Deployment
 # Uses pre-built images from Docker Hub
 
-version: '3.9'
-
 services:
   # API Server (Express.js)
   api:
-    image: aniruddh262/classmos-api:latest
+    image: ${DOCKERHUB_USERNAME:-aniruddh262}/classmos-api:latest
     container_name: classmos-api
     restart: unless-stopped
     ports:
@@ -41,7 +39,7 @@ services:
 
   # Socket.io Server (Real-time communication)
   socket:
-    image: ${DOCKERHUB_USERNAME}/classmos-socket:latest
+    image: ${DOCKERHUB_USERNAME:-aniruddh262}/classmos-socket:latest
     container_name: classmos-socket
     restart: unless-stopped
     ports:
@@ -76,7 +74,7 @@ services:
 
   # Web Frontend (Next.js)
   web:
-    image: ${DOCKERHUB_USERNAME}/classmos-web:latest
+    image: ${DOCKERHUB_USERNAME:-aniruddh262}/classmos-web:latest
     container_name: classmos-web
     restart: unless-stopped
     ports:
