@@ -6,7 +6,7 @@ version: '3.9'
 services:
   # API Server (Express.js)
   api:
-    image: ${DOCKERHUB_USERNAME}/classmos-api:latest
+    image: aniruddh262/classmos-api:latest
     container_name: classmos-api
     restart: unless-stopped
     ports:
